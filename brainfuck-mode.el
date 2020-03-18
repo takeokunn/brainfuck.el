@@ -78,6 +78,7 @@
             ((string-equal (nth index input-list) "+") (aset mem ptr (incf (aref mem ptr))))
             ((string-equal (nth index input-list) "-") (aset mem ptr (decf (aref mem ptr))))
             ((string-equal (nth index input-list) ".") (princ (char-to-string (aref mem ptr))))
+            ((string-equal (nth index input-list) ",") (aset mem ptr (read-char)))
             ((string-equal (nth index input-list) "[") (if (zerop (aref mem ptr)) (setq index (incf (aref braces index)))))
             ((string-equal (nth index input-list) "]") (unless (zerop (aref mem ptr)) (setq index (aref braces index))))))))
 
