@@ -82,4 +82,9 @@
             ((string-equal (nth index input-list) "[") (if (zerop (aref mem ptr)) (setq index (incf (aref braces index)))))
             ((string-equal (nth index input-list) "]") (unless (zerop (aref mem ptr)) (setq index (aref braces index))))))))
 
+(defun bf-exec ()
+  (interactive)
+  (let ((str (buffer-string)))
+    (bf-interpreter str)))
+
 (provide 'brainfuck-mode)
