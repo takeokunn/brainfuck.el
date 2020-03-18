@@ -55,17 +55,20 @@
   (interactive)
   (let* ((input-list (-map #'char-to-string (coerce input 'list)))
          (ptr 0)
-         (mem (make-vector 10000 0))
-         (braces (make-vector 10000 0))
+         (mem (make-vector 30000 0))
+         (braces (make-vector (length input-list) 0))
          (braces-stack '()))
     (dotimes (outer (length input-list))
       (if (string-equal (nth outer input-list) "[")
           (let ((cnt 0))
             (progn
-              (dotimes (inner (length (nthcdr outer input-list)))
+              (do ((inner 0 (1+ inner)))
+                  ((< (length (nthcdr outer input-list)) inner))
                 (cond ((string-equal (nth (+ outer inner) input-list) "[") (push t braces-stack))
                       ((string-equal (nth (+ outer inner) input-list) "]") (pop braces-stack)))
-                (unless (zerop (length braces-stack)) (setq cnt (incf cnt))))
+                (if (zerop (length braces-stack))
+                    (setq inner (length (nthcdr outer input-list)))
+                    (incf cnt)))
               (aset braces outer (+ outer cnt))
               (aset braces (+ outer cnt) outer)))))
     (do ((index 0 (1+ index)))
@@ -77,8 +80,5 @@
             ((string-equal (nth index input-list) ".") (princ (char-to-string (aref mem ptr))))
             ((string-equal (nth index input-list) "[") (if (zerop (aref mem ptr)) (setq index (incf (aref braces index)))))
             ((string-equal (nth index input-list) "]") (unless (zerop (aref mem ptr)) (setq index (aref braces index))))))))
-
-(bf-interpreter "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.+.+.>++++++++++.") ;; => ABC
-(bf-interpreter "++++++[>++++++++<-]>.") ;; => 0
 
 (provide 'brainfuck-mode)
